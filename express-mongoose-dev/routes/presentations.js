@@ -62,4 +62,60 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/:id', function(req, res, next) {
+  var token = req.headers.token;
+  var presentationId = req.params.id;
+
+  var user = User.findOne({_id: ObjectID(token)}, function(err, user) {
+    if (err) {
+      res.status(500);
+      res.send();
+    } else {
+      if (user != null) {
+        Presentation.findOne({user_id: ObjectID(token), _id: ObjectID(presentationId)}, function(err, presentation) {
+          if(err) {
+            res.status(500);
+            res.send();
+          } else {
+            console.log(presentation);
+            res.status(200);
+            res.send(presentation);
+          }
+        });
+      } else {
+        res.status(401);
+        res.send();
+      }
+    }
+  });
+});
+
+router.delete('/:id', function(req, res, next) {
+  var token = req.headers.token;
+  var presentationId = req.params.id;
+
+  var user = User.findOne({_id: ObjectID(token)}, function(err, user) {
+    if (err) {
+      res.status(500);
+      res.send();
+    } else {
+      if (user != null) {
+        Presentation.findOne({user_id: ObjectID(token), _id: ObjectID(presentationId)}, function(err, presentation) {
+          if(err) {
+            res.status(500);
+            res.send();
+          } else {
+            console.log(presentation);
+            res.status(200);
+            presentation.remove();
+            res.send(presentation);
+          }
+        });
+      } else {
+        res.status(401);
+        res.send();
+      }
+    }
+  });
+});
 module.exports = router;
